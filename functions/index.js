@@ -1,5 +1,4 @@
-import "./admin"
+require("./admin.js");
+const uploadAndVectorialized = require("./stories/upload-and-vectorialize.js");
 
-import { uploadAndVectorialized } from "./stories/upload-and-vectorialize";
-
-exports.stories_uploadAndVectorialize = uploadAndVectorialized
+exports.stories = { uploadAndVectorialized }

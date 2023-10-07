@@ -39,6 +39,9 @@
     },
     "ui": {
       "enabled": true
+    },
+    "storage": {
+      "port": 9199
     }
   }
 }
