@@ -3,6 +3,8 @@
 // - salva su pinecone
 // - salva stato documento su DB
 // - leggi da storage- langchain -> vettorializza- salva su pinecone- salva stato documento su DB
+
+
 async function readDocumentFromCloudStorage(bucketName, fileName) {
     // Import the Cloud Storage client library.
     const { Storage } = require('@google-cloud/storage');
@@ -37,5 +39,19 @@ async function readDocumentFromCloudStorage(bucketName, fileName) {
     return fileContents;
   }
 
-
   
+  async function splitIntoChunks(text, chunkSize) {
+    const splitter = new RecursiveCharacterTextSplitter({
+      chunkSize: 500,
+      chunkOverlap: 100,
+    });
+    
+    const docOutput = await splitter.splitDocuments([
+      new Document({ pageContent: text }),
+    ]);
+
+    return docOutput;
+  }
+  
+
+ 
