@@ -51,7 +51,7 @@ exports.trigger = onCall(async (request) => {
     ${reply}
     -----
 
-    do you think this is a good reply based on context?`,
+    do you think this is a good reply based on context? Reply "YES" or "NO"`,
   });
 
   await db.doc(`/objectives/${objectiveId}`).set(
