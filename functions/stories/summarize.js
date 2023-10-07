@@ -53,7 +53,7 @@ exports.trigger = onDocumentUpdated(
       await db.doc(`/objectives/${objectiveId}`).set(
         {
           summarized: true,
-          summary: text.split("|"),
+          summary: text.split("|").map((e) => e.trim()),
         },
         { merge: true }
       );
