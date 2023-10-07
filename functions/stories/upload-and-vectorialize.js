@@ -14,43 +14,47 @@ const { createClient } = require("@supabase/supabase-js");
 
 const { PDFLoader } = require("langchain/document_loaders/fs/pdf");
 
-const { getFirestore } = require("firebase-admin/firestore")
+const { getFirestore } = require("firebase-admin/firestore");
 const db = getFirestore();
 
 const CHUNK_SIZE = 1000;
 
-exports.trigger = onObjectFinalized(
-  {},
-  async (event) => {
-    const { bucket, name } = event.data;
+exports.trigger = onObjectFinalized({}, async (event) => {
+  const { bucket, name } = event.data;
 
-    // download the file
-    const actualBucket = getStorage().bucket(bucket)
-    const buffer = await actualBucket.file(name).download();
-    const blob = new Blob(buffer)
+  // download the file
+  const actualBucket = getStorage().bucket(bucket);
+  const buffer = await actualBucket.file(name).download();
+  const blob = new Blob(buffer);
 
-    const loader = new PDFLoader(blob);
-    const docs = await loader.loadAndSplit(
-      new RecursiveCharacterTextSplitter({
-        chunkSize: CHUNK_SIZE,
-        chunkOverlap: CHUNK_SIZE / 5,
-      })
-    );
+  console.log(blob);
 
-    const objectiveId = name.split("objectives/")[1].split("/")[0];
+  const loader = new PDFLoader(blob);
+  const docs = await loader.loadAndSplit(
+    new RecursiveCharacterTextSplitter({
+      chunkSize: CHUNK_SIZE,
+      chunkOverlap: CHUNK_SIZE / 5,
+    })
+  );
 
-    console.info("processing", objectiveId);
+  const objectiveId = name.split("objectives/")[1].split("/")[0];
 
-    await toVector(objectiveId, docs);
+  const metaDocs = docs.map((doc) => {
+    doc.metadata = { ...doc.metadata, objectiveId };
+    return doc;
+  });
 
-    await db.doc(`/objectives/${objectiveId}`).set(
-      {
-        sourceReady: true,
-      },
-      { merge: true }
-    );
-  }
-);
+  console.info("processing", objectiveId);
+
+  await toVector(objectiveId, metaDocs);
+
+  await db.doc(`/objectives/${objectiveId}`).set(
+    {
+      sourceReady: true,
+    },
+    { merge: true }
+  );
+});
 
 const toVector = (objectiveId, docs) => {
   const supabaseClient = createClient(
@@ -63,8 +67,7 @@ const toVector = (objectiveId, docs) => {
     new OpenAIEmbeddings({ openAIApiKey: process.env.OPENAI_KEY }),
     {
       client: supabaseClient,
-      // tableName: `documents_${objectiveId}`,
-      tableName: 'documents',
+      tableName: "documents",
       queryName: "match_documents",
     }
   );

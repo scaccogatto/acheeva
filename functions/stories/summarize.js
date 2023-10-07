@@ -7,7 +7,7 @@ const { createClient } = require("@supabase/supabase-js");
 
 const { onDocumentUpdated } = require("firebase-functions/v2/firestore");
 
-const { getFirestore } = require("firebase-admin/firestore")
+const { getFirestore } = require("firebase-admin/firestore");
 const db = getFirestore();
 
 exports.trigger = onDocumentUpdated(
@@ -34,7 +34,13 @@ exports.trigger = onDocumentUpdated(
       const vectorStore = new SupabaseVectorStore(
         new OpenAIEmbeddings({ openAIApiKey: process.env.OPENAI_KEY }),
         // { client: supabaseClient, tableName: `documents_${objectiveId}` }
-        { client: supabaseClient, tableName: `documents` }
+        {
+          client: supabaseClient,
+          tableName: `documents`,
+          filter: {
+            objectiveId,
+          },
+        }
       );
 
       const chain = RetrievalQAChain.fromLLM(model, vectorStore.asRetriever());
@@ -47,7 +53,7 @@ exports.trigger = onDocumentUpdated(
       await db.doc(`/objectives/${objectiveId}`).set(
         {
           summarized: true,
-          summary: [text]
+          summary: [text],
         },
         { merge: true }
       );
