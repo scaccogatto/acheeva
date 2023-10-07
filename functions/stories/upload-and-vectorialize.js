@@ -26,7 +26,7 @@ exports.trigger = onObjectFinalized({ memory: '4GiB' }, async (event) => {
   await db.doc(`/objectives/${objectiveId}`).set(
     {
       sourceReady: false,
-      summarized: false,
+      modulized: false,
       quizReady: false,
     },
     { merge: true }

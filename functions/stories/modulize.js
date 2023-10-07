@@ -6,7 +6,6 @@ const { OpenAIEmbeddings } = require("langchain/embeddings/openai");
 const { createClient } = require("@supabase/supabase-js");
 
 const { onDocumentUpdated } = require("firebase-functions/v2/firestore");
-
 const { getFirestore } = require("firebase-admin/firestore");
 const db = getFirestore();
 
@@ -45,15 +44,37 @@ exports.trigger = onDocumentUpdated(
 
       const chain = RetrievalQAChain.fromLLM(model, vectorStore.asRetriever());
 
-      // TODO: summarize
       const { text } = await chain.call({
-        query: "Give me a list of the main topics about the context, divided by a pipe character",
+        query:
+          "Give me a list of the main topics about the context, divided by a pipe character.",
       });
+
+      const topics = text.split("|").map((e) => e.trim());
+
+      const modules = await Promise.all(
+        topics.map(async (topic) => {
+          const title = topic.trim();
+
+          return {
+            title,
+            subtitle: (
+              await chain.call({
+                query: `Give me a subtitle about the topic: ${title}`,
+              })
+            ).text,
+            summary: (
+              await chain.call({
+                query: `Give me a summary about the topic: ${title}`,
+              })
+            ).text,
+          };
+        })
+      );
 
       await db.doc(`/objectives/${objectiveId}`).set(
         {
-          summarized: true,
-          summary: text.split("|").map((e) => e.trim()),
+          modulized: true,
+          modules,
         },
         { merge: true }
       );
