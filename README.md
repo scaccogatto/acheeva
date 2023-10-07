@@ -2,3 +2,4 @@
 2. summarize
 3. create-schedule
 4. create-quiz
+5. check-quiz

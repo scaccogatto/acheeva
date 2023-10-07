@@ -1,0 +1,22 @@
+{
+  "name": "acheeva",
+  "version": "1.0.0",
+  "description": "1. upload-and-vectorize 2. summarize 3. create-schedule 4. create-quiz",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/scaccogatto/acheeva.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/scaccogatto/acheeva/issues"
+  },
+  "homepage": "https://github.com/scaccogatto/acheeva#readme",
+  "volta": {
+    "node": "18.18.0"
+  }
+}
