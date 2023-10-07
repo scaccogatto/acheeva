@@ -17,13 +17,14 @@ const { PDFLoader } = require("langchain/document_loaders/fs/pdf");
 const { getFirestore } = require("firebase-admin/firestore");
 const db = getFirestore();
 
-const CHUNK_SIZE = 1000
+const CHUNK_SIZE = 1000;
 
-console.log(process.env.OPENAI_KEY)
+console.log(process.env.OPENAI_KEY);
 
 exports.trigger = onObjectFinalized(
   { region: "europe-west3" },
   async (event) => {
+    console.log(process.env.SUPABASE_URL);
     const { bucket, name } = event.data;
 
     // download the file
@@ -42,10 +43,9 @@ exports.trigger = onObjectFinalized(
     const objectiveId = name.split("objectives/")[1].split("/")[0];
 
     console.info("processing", objectiveId);
-    console.info(docs)
+    console.info(docs);
 
-    toVector(objectiveId, docs)
-
+    toVector(objectiveId, docs);
 
     await db.doc(`/objectives/${objectiveId}`).set(
       {
@@ -56,16 +56,19 @@ exports.trigger = onObjectFinalized(
   }
 );
 
-// TO-DO: move to env vars
-const supabaseClient = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_KEY
-);
-
 const toVector = (objectiveId, docs) => {
-  SupabaseVectorStore.fromDocuments(docs, new OpenAIEmbeddings({ openAIApiKey: process.env.OPENAI_KEY }), {
-    client: supabaseClient,
-    tableName: `${objectiveId}_documents`,
-    queryName: "match_documents",
-  });
+  const supabaseClient = createClient(
+    process.env.SUPABASE_URL,
+    process.env.SUPABASE_KEY
+  );
+
+  SupabaseVectorStore.fromDocuments(
+    docs,
+    new OpenAIEmbeddings({ openAIApiKey: process.env.OPENAI_KEY }),
+    {
+      client: supabaseClient,
+      tableName: `${objectiveId}_documents`,
+      queryName: "match_documents",
+    }
+  );
 };
