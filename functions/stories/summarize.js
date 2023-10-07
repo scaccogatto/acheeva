@@ -47,7 +47,7 @@ exports.trigger = onDocumentUpdated(
 
       // TODO: summarize
       const { text } = await chain.call({
-        query: "Use the context and give an index about it, every index element should be concise",
+        query: "Give me a list of the main topics about the context, divided by a pipe character",
       });
 
       await db.doc(`/objectives/${objectiveId}`).set(

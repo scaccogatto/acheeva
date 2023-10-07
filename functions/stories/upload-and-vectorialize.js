@@ -23,7 +23,7 @@ exports.trigger = onObjectFinalized({}, async (event) => {
   const { bucket, name } = event.data;
   const objectiveId = name.split("objectives/")[1].split("/")[0];
 
-	await db.doc(`/objectives/${objectiveId}`).set(
+  await db.doc(`/objectives/${objectiveId}`).set(
     {
       sourceReady: false,
     },
