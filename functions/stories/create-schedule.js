@@ -1,0 +1,3 @@
+- prompt engineering per create i captoli
+- dividere i capitoli per sottocapitoli (eventualmente)
+- per ogni sottocapitolo creare un tempo -> time

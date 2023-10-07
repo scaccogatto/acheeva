@@ -1,0 +1,4 @@
+- leggi da storage
+- langchain -> vettorializza
+- salva su pinecone
+- salva stato documento su DB
