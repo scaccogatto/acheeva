@@ -10,6 +10,10 @@ import { getStorage } from "firebase-admin/storage";
 import { SupabaseVectorStore } from "langchain/vectorstores/supabase";
 import { createClient } from "@supabase/supabase-js";
 
+import { OpenAIEmbeddings } from "langchain/embeddings/openai";
+
+
+
 export const uploadAndVectorialized = onObjectFinalized(
   ({},
   async (event) => {
@@ -22,13 +26,14 @@ export const uploadAndVectorialized = onObjectFinalized(
   })
 );
 
+// TO-DO: move to env vars
 const supabaseClient = createClient(
   "https://gqezyrgsnggnizmjajay.supabase.co",
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdxZXp5cmdzbmdnbml6bWphamF5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE2OTY2OTI2NjMsImV4cCI6MjAxMjI2ODY2M30.04n_cJx6DxWtLCmhpNbbMQ3Mf42XBeq7CQaF5itTMZQ"
 );
 
 const toVector = (docs) => {
-  SupabaseVectorStore.fromDocuments(docs, embeddings, {
+  SupabaseVectorStore.fromDocuments(docs, new OpenAIEmbeddings(), {
     client: supabaseClient,
     tableName: "documents",
     queryName: "match_documents",
