@@ -9,6 +9,8 @@ const { onDocumentUpdated } = require("firebase-functions/v2/firestore");
 const { getFirestore } = require("firebase-admin/firestore");
 const db = getFirestore();
 
+const OpenAI = require("openai");
+
 exports.trigger = onDocumentUpdated(
   "objectives/{objectiveId}",
   async (event) => {
@@ -51,9 +53,14 @@ exports.trigger = onDocumentUpdated(
 
       const topics = text.split("|").map((e) => e.trim());
 
+      const openai = new OpenAI({ apiKey: process.env.OPENAI_KEY });
+
       const modules = await Promise.all(
         topics.map(async (topic) => {
           const title = topic.trim();
+          const imageprompt = (await chain.call({
+            query: `Act like a prompt engineer and give me a prompt with maximum 100 words for that generates an image about the topic: ${title}`,
+          })).text;
 
           return {
             title,
@@ -67,6 +74,11 @@ exports.trigger = onDocumentUpdated(
                 query: `Give me a summary about the topic: ${title}`,
               })
             ).text,
+            picture: (await openai.images.generate({
+              prompt: imageprompt,
+              n: 1,
+              size: "256x256",
+            })).data[0].url,
           };
         })
       );
