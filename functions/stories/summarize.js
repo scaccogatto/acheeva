@@ -47,7 +47,7 @@ exports.trigger = onDocumentUpdated(
 
       // TODO: summarize
       const { text } = await chain.call({
-        query: "What is task decomposition?",
+        query: "Use the context and give an index about it, every index element should be concise",
       });
 
       await db.doc(`/objectives/${objectiveId}`).set(

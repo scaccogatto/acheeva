@@ -21,13 +21,19 @@ const CHUNK_SIZE = 1000;
 
 exports.trigger = onObjectFinalized({}, async (event) => {
   const { bucket, name } = event.data;
+  const objectiveId = name.split("objectives/")[1].split("/")[0];
+
+	await db.doc(`/objectives/${objectiveId}`).set(
+    {
+      sourceReady: false,
+    },
+    { merge: true }
+  );
 
   // download the file
   const actualBucket = getStorage().bucket(bucket);
   const buffer = await actualBucket.file(name).download();
   const blob = new Blob(buffer);
-
-  console.log(blob);
 
   const loader = new PDFLoader(blob);
   const docs = await loader.loadAndSplit(
@@ -37,8 +43,6 @@ exports.trigger = onObjectFinalized({}, async (event) => {
     })
   );
 
-  const objectiveId = name.split("objectives/")[1].split("/")[0];
-
   const metaDocs = docs.map((doc) => {
     doc.metadata = { ...doc.metadata, objectiveId };
     return doc;
@@ -46,7 +50,7 @@ exports.trigger = onObjectFinalized({}, async (event) => {
 
   console.info("processing", objectiveId);
 
-  await toVector(objectiveId, metaDocs);
+  await toVector(metaDocs);
 
   await db.doc(`/objectives/${objectiveId}`).set(
     {
@@ -56,7 +60,7 @@ exports.trigger = onObjectFinalized({}, async (event) => {
   );
 });
 
-const toVector = (objectiveId, docs) => {
+const toVector = (docs) => {
   const supabaseClient = createClient(
     process.env.SUPABASE_URL,
     process.env.SUPABASE_KEY
