@@ -45,7 +45,7 @@ exports.trigger = onObjectFinalized(
     console.info("processing", objectiveId);
     console.info(docs);
 
-    toVector(objectiveId, docs);
+    await toVector(objectiveId, docs);
 
     await db.doc(`/objectives/${objectiveId}`).set(
       {
@@ -62,12 +62,13 @@ const toVector = (objectiveId, docs) => {
     process.env.SUPABASE_KEY
   );
 
-  SupabaseVectorStore.fromDocuments(
+  return SupabaseVectorStore.fromDocuments(
     docs,
     new OpenAIEmbeddings({ openAIApiKey: process.env.OPENAI_KEY }),
     {
       client: supabaseClient,
-      tableName: `${objectiveId}_documents`,
+      // tableName: `${objectiveId}_documents`,
+      tableName: 'documents',
       queryName: "match_documents",
     }
   );
