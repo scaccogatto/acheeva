@@ -18,8 +18,8 @@ exports.trigger = onDocumentUpdated(
     console.info("triggered", objectiveId);
 
     if (
-      event.data.before.data().sourceReady === false &&
-      event.data.after.data().sourceReady === true
+      event.data.before.data().summarized === false &&
+      event.data.after.data().summarized === true
     ) {
       const model = new ChatOpenAI({
         modelName: "gpt-3.5-turbo",
@@ -44,15 +44,22 @@ exports.trigger = onDocumentUpdated(
 
       const chain = RetrievalQAChain.fromLLM(model, vectorStore.asRetriever());
 
-      // TODO: quiz question
-      const { text } = await chain.call({
-        query: "Generate a question based on the context",
-      });
+      const { summary } = event.data.after.data();
+
+      const questions = await Promise.all(
+        summary.map(async (topic) => {
+          const { text } = await chain.call({
+            query: `Generate a question based on the context and the following topic: ${topic}`,
+          });
+
+          return text;
+        })
+      );
 
       await db.doc(`/objectives/${objectiveId}`).set(
         {
           quizReady: true,
-          quizQuestions: [text],
+          quizQuestions: questions,
         },
         { merge: true }
       );
