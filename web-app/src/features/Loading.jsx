@@ -1,6 +1,22 @@
 import {CircularProgress} from "@mui/material";
+import {useEffect, useState} from "react";
 
 const Loading = ({text}) => {
+    const [time, setTime] = useState(60);
+
+    useEffect(() => {
+        // This function will be called when the component mounts
+        const intervalId = setInterval(() => {
+            // Update the counter
+            setTime((prevTime) => prevTime - 1);
+        }, 1000); // Run the interval every 1000ms (1 second)
+
+        // This function will be called when the component unmounts
+        return () => {
+            // Clear the interval to avoid memory leaks
+            clearInterval(intervalId);
+        };
+    }, []);
     return (
         <div className="flex flex-col justify-center items-center mt-16 gap-28">
             <svg width="146" height="178" viewBox="0 0 146 178" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -28,7 +44,10 @@ const Loading = ({text}) => {
             </svg>
 
             <CircularProgress/>
-            <p className="text-base">{text}</p>
+            <div>
+                <p className="text-base">{text}</p>
+                <p className="">Circa {Math.max(time, 0)} secondi</p>
+            </div>
         </div>
 
 

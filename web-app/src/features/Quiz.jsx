@@ -31,8 +31,6 @@ const Quiz = () => {
 
 
 
-
-
     return (
         <Fragment>
             <div className="flex flex-col justify-center px-7 md:px-20 gap-5">
