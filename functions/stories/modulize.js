@@ -59,7 +59,7 @@ exports.trigger = onDocumentUpdated(
         topics.map(async (topic) => {
           const title = topic.trim();
           const imageprompt = (await chain.call({
-            query: `Act like a prompt engineer and give me a prompt with maximum 100 words for that generates an image about the topic: ${title}`,
+            query: `Act like a prompt engineer and give me a prompt with maximum 10 words for that generates an image about the topic: ${title} considering the whole context`,
           })).text;
 
           return {
