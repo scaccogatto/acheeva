@@ -4,33 +4,82 @@
 // - salva stato documento su DB
 // - leggi da storage- langchain -> vettorializza- salva su pinecone- salva stato documento su DB
 
-import { onObjectFinalized } from "firebase-functions/v2/storage";
-import { getStorage } from "firebase-admin/storage";
+const { onObjectFinalized } = require("firebase-functions/v2/storage");
+const { getStorage } = require("firebase-admin/storage");
 
-import { SupabaseVectorStore } from "langchain/vectorstores/supabase";
-import { createClient } from "@supabase/supabase-js";
+const { SupabaseVectorStore } = require("langchain/vectorstores/supabase");
+const { OpenAIEmbeddings } = require("langchain/embeddings/openai");
+const { RecursiveCharacterTextSplitter } = require("langchain/text_splitter");
+const { createClient } = require("@supabase/supabase-js");
 
-export const uploadAndVectorialized = onObjectFinalized(
-  ({},
-  async (event) => {
-    const { bucket, name } = event.data;
+const { PDFLoader } = require("langchain/document_loaders/fs/pdf");
 
-    // download the file
-    const actualBucket = getStorage().bucket(bucket);
-    const downloadResponse = await actualBucket.file(name).download();
-    console.log(downloadResponse);
-  })
-);
+const { getFirestore } = require("firebase-admin/firestore");
+const db = getFirestore();
 
-const supabaseClient = createClient(
-  "https://gqezyrgsnggnizmjajay.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdxZXp5cmdzbmdnbml6bWphamF5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE2OTY2OTI2NjMsImV4cCI6MjAxMjI2ODY2M30.04n_cJx6DxWtLCmhpNbbMQ3Mf42XBeq7CQaF5itTMZQ"
-);
+const CHUNK_SIZE = 1000;
+
+exports.trigger = onObjectFinalized({ memory: "4GiB" }, async (event) => {
+  const { bucket, name } = event.data;
+
+  if (name.includes("public")) {
+    return;
+  }
+
+  const objectiveId = name.split("objectives/")[1].split("/")[0];
+
+  await db.doc(`/objectives/${objectiveId}`).set(
+    {
+      sourceReady: false,
+      modulized: false,
+      quizReady: false,
+    },
+    { merge: true }
+  );
+
+  // download the file
+  const actualBucket = getStorage().bucket(bucket);
+  const buffer = await actualBucket.file(name).download();
+  const blob = new Blob(buffer);
+
+  const loader = new PDFLoader(blob);
+  const docs = await loader.loadAndSplit(
+    new RecursiveCharacterTextSplitter({
+      chunkSize: CHUNK_SIZE,
+      chunkOverlap: CHUNK_SIZE / 5,
+    })
+  );
+
+  const metaDocs = docs.map((doc) => {
+    doc.metadata = { ...doc.metadata, objectiveId };
+    return doc;
+  });
+
+  console.info("processing", objectiveId);
+
+  await toVector(metaDocs);
+
+  await db.doc(`/objectives/${objectiveId}`).set(
+    {
+      sourceReady: true,
+    },
+    { merge: true }
+  );
+});
 
 const toVector = (docs) => {
-  SupabaseVectorStore.fromDocuments(docs, embeddings, {
-    client: supabaseClient,
-    tableName: "documents",
-    queryName: "match_documents",
-  });
+  const supabaseClient = createClient(
+    process.env.SUPABASE_URL,
+    process.env.SUPABASE_KEY
+  );
+
+  return SupabaseVectorStore.fromDocuments(
+    docs,
+    new OpenAIEmbeddings({ openAIApiKey: process.env.OPENAI_KEY }),
+    {
+      client: supabaseClient,
+      tableName: "documents",
+      queryName: "match_documents",
+    }
+  );
 };

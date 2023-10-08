@@ -16,7 +16,7 @@
     }
   ],
   "hosting": {
-    "public": "public",
+    "public": "/web-app/dist",
     "ignore": [
       "firebase.json",
       "**/.*",
@@ -46,6 +46,9 @@
     },
     "ui": {
       "enabled": true
+    },
+    "storage": {
+      "port": 9199
     }
   }
 }

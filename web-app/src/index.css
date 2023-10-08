@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: 'Prompt', sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
@@ -14,11 +14,16 @@
   -webkit-text-size-adjust: 100%;
 }
 
+#root {
+  min-height: 100vh;
+}
+
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
+  /*display: flex;*/
+  /*justify-content: center;*/
+  /*align-items: start;*/
   min-width: 320px;
   min-height: 100vh;
 }

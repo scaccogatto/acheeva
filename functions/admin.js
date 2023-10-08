@@ -1,3 +1,3 @@
-import { initializeApp } from "firebase-admin/app";
+const { initializeApp } = require("firebase-admin/app");
 
 initializeApp();
