@@ -86,7 +86,7 @@ exports.trigger = onDocumentUpdated(
           await storage()
             .bucket()
             .upload(`${objectiveId}-${i}.png`, {
-              destination: `/public/${objectiveId}-${i}.png`,
+              destination: `public/${objectiveId}-${i}.png`,
             });
 
           fs.unlinkSync(`${objectiveId}-${i}.png`);
@@ -105,7 +105,7 @@ exports.trigger = onDocumentUpdated(
             ).text,
             picture: storage()
               .bucket()
-              .file(`/public/${objectiveId}-${i}.png`)
+              .file(`public/${objectiveId}-${i}.png`)
               .publicUrl(),
           };
         })
