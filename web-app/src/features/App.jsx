@@ -19,20 +19,17 @@ const App = () => {
 
     const handleLogout = async () => {
         await logout();
+        setIsMenuOpen(false);
     }
 
-    useEffect(() => {
-        if (!loading && !user) {
-            setUser(user);
-            navigate("/login");
-        } else {
-            setUser(user);
-        }
-    }, [user])
 
     useEffect(() => {
         setIsUserLoading(loading);
     }, [loading]);
+
+    useEffect(() => {
+        setUser(user);
+    }, [user]);
 
     useEffect(() => {
 
@@ -72,10 +69,11 @@ const App = () => {
                 onOpen={() => setIsMenuOpen(true)}
                 sx={{width: "500px"}}
             >
-                <div>
-                    <IconButton onClick={handleLogout}>
+                <div className="p-10">
+                    {/*<IconButton onClick={handleLogout}>
                         <LogoutIcon/>
-                    </IconButton>
+                    </IconButton>*/}
+                    <Button onClick={() => { setIsMenuOpen(false); navigate("/welcome")}}>Home</Button>
                 </div>
             </SwipeableDrawer>
             <div className="h-full m-auto" style={{maxWidth: "768px"}}>

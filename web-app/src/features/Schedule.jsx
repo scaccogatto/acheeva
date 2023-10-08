@@ -1,10 +1,11 @@
 import {Button, Card, CardActions, CardContent, SwipeableDrawer} from "@mui/material";
 import {useNavigate} from "react-router-dom";
-import {Fragment, useContext, useMemo, useState} from "react";
+import {Fragment, useContext, useEffect, useMemo, useState} from "react";
 import {AcheevaContext} from "../context/AcheevaContext.jsx";
 import {MyButton} from "./Login.jsx";
 import Loading from "./Loading.jsx";
 import {FullButton} from "./Quiz.jsx";
+import AcheevaProvider from "../providers/AcheevaProvider.jsx";
 
 const Schedule = () => {
 
@@ -12,6 +13,9 @@ const Schedule = () => {
     const {myObjectives, objective, timeline} = useContext(AcheevaContext) || {};
     const [isAnswerOpen, setIsAnswerOpen] = useState(false);
     const [clickedModule, setClickedModule] = useState(undefined);
+
+    const {user, isUserLoading} = useContext(AcheevaProvider) || {};
+
     const handleNext = () => {
         navigate("/quiz")
     }
@@ -22,9 +26,11 @@ const Schedule = () => {
         }
     }, [myObjectives]);*/
 
+
+
     return (
         <Fragment>
-            {myObjectives[0]?.quizReady ?
+            {myObjectives && myObjectives[0]?.quizReady ?
                 <div className="fflex flex-col p-7 md:p-20 gap-10">
                     <div className="flex justify-center mb-4">
                         <img src="/schedule.svg"/>
@@ -34,7 +40,7 @@ const Schedule = () => {
                     {/*<p className="text-xs font-bold my-4 text-blue-400">DEADLINE: {timeline?.endDate}</p>*/}
 
                     <div className="mt-4 flex flex-col gap-3">
-                        {myObjectives[0]?.modules?.map((module, index) => {
+                        {myObjectives && myObjectives[0]?.modules?.map((module, index) => {
                             return (
                                 <Card className="p-1" sx={{
                                     boxShadow: "0 2px 20px rgba(0, 0, 0, 0.15)", borderRadius: "10px",
@@ -51,20 +57,23 @@ const Schedule = () => {
                                                     ricevere le
                                                     reward.</p>
                                             </div>
-                                            <div className="flex">
-                                                <MyButton variant="contained"
-                                                          sx={{fontSize: "10px"}} onClick={() => {
-                                                    setIsAnswerOpen(true);
-                                                    setClickedModule(index);
-                                                }}>Dettagli</MyButton>
-                                                <MyButton variant="contained" color="secondary"
-                                                          sx={{padding: "3px 15px"}}
-                                                          onClick={() => navigate(`/quiz/${index}`)}>Fai il
-                                                    test</MyButton>
-
-                                            </div>
                                         </div>
+
                                     </CardContent>
+                                    <CardActions>
+                                        <div className="flex gap-2 justify-end w-full">
+                                            <MyButton variant="contained"
+                                                      sx={{fontSize: "10px"}} onClick={() => {
+                                                setIsAnswerOpen(true);
+                                                setClickedModule(index);
+                                            }}>Dettagli</MyButton>
+                                            <MyButton variant="contained" color="secondary"
+                                                      sx={{padding: "3px 15px"}}
+                                                      onClick={() => navigate(`/quiz/${index}`)}>Fai il
+                                                test</MyButton>
+
+                                        </div>
+                                    </CardActions>
                                 </Card>
                             )
 
@@ -86,8 +95,8 @@ const Schedule = () => {
             >
                 <div style={{height: "60vh", borderRadius: "24px 24px 0px 0px"}} className="p-3">
                     <h3 className="font-semibold text-xl mb-3">Abstract</h3>
-                    {myObjectives[0]?.modules &&
-                        <p className="text-sm p-4">{myObjectives[0]?.modules[clickedModule]?.summary}</p>
+                    {myObjectives && myObjectives[0]?.modules &&
+                        <p className="text-sm p-4">{myObjectives && myObjectives[0]?.modules[clickedModule]?.summary}</p>
                     }
                 </div>
 

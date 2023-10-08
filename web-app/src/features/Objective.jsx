@@ -1,5 +1,5 @@
 import {useNavigate} from "react-router-dom";
-import {useCallback, useContext, useState} from "react";
+import {useCallback, useContext, useEffect, useState} from "react";
 import {Button, TextField} from "@mui/material";
 import {DemoContainer} from "@mui/x-date-pickers/internals/demo/index.js";
 import {DatePicker} from "@mui/x-date-pickers";
@@ -7,6 +7,7 @@ import {AcheevaContext} from "../context/AcheevaContext.jsx";
 import styled from "@emotion/styled";
 import {MyButton} from "./Login.jsx";
 import {differenceInCalendarDays} from "date-fns";
+import AcheevaProvider from "../providers/AcheevaProvider.jsx";
 
 const Objective = () => {
     const navigate = useNavigate();
@@ -14,6 +15,10 @@ const Objective = () => {
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
     const {setTimeline} = useContext(AcheevaContext);
+
+    const {user, isUserLoading} = useContext(AcheevaProvider) || {};
+
+
     const handleObjective = e => {
         setObjective(e.target.value);
     }

@@ -1,10 +1,11 @@
 import {Card, CardContent, SwipeableDrawer, TextareaAutosize} from "@mui/material";
 import {useNavigate, useParams} from "react-router-dom";
-import {Fragment, useContext, useMemo, useState} from "react";
+import {Fragment, useContext, useEffect, useMemo, useState} from "react";
 import {AcheevaContext} from "../context/AcheevaContext.jsx";
 import {MyButton} from "./Login.jsx";
 import styled from "@emotion/styled";
 import {checkQuiz} from "../services/service.js";
+import AcheevaProvider from "../providers/AcheevaProvider.jsx";
 
 const Quiz = () => {
 
@@ -20,11 +21,22 @@ const Quiz = () => {
         } else return undefined;
     }, [myObjectives]);
     const handleVerifyAnswer = async () => {
-        debugger;
         const response = await checkQuiz(answer, myLastObjective.id, myLastObjective.quizQuestions[number]);
         setFeedback({...response, number});
         return navigate("/feedback");
     }
+
+    const {user, isUserLoading} = useContext(AcheevaProvider) || {};
+
+
+    useEffect(() => {
+
+        if(isUserLoading !== undefined && !isUserLoading && !user && user !== undefined) {
+            navigate("/login");
+        }
+
+    }, [user, isUserLoading])
+
 
     return (
         <Fragment>

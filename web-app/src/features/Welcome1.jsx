@@ -1,10 +1,13 @@
-import {Button, CircularProgress} from "@mui/material";
 import {useNavigate} from "react-router-dom";
 import {MyButton} from "./Login.jsx";
+import {useContext, useEffect} from "react";
+import AcheevaProvider from "../providers/AcheevaProvider.jsx";
 
 const Welcome1 = () => {
 
     const navigate = useNavigate();
+    const {user, isUserLoading} = useContext(AcheevaProvider) || {};
+
 
     const handleContinue = () => {
         navigate("/objective");

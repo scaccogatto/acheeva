@@ -1,4 +1,4 @@
-import React, {useContext} from 'react'
+import React from 'react'
 import ReactDOM from 'react-dom/client'
 import './index.css'
 import {createBrowserRouter, RouterProvider} from "react-router-dom";
@@ -8,13 +8,12 @@ import Pdf from "./features/Pdf.jsx";
 import {LocalizationProvider} from "@mui/x-date-pickers";
 import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
 import Schedule from "./features/Schedule.jsx";
-import Feedback from "./features/Feedback.jsx";
 import Quiz from "./features/Quiz.jsx";
 import App from "./features/App.jsx";
 import AcheevaProvider from "./providers/AcheevaProvider.jsx";
-import Fallback from "./features/Fallback.jsx";
 import Welcome1 from "./features/Welcome1.jsx";
 import {createTheme, ThemeProvider} from "@mui/material";
+import Feedback from "./features/Feedback.jsx";
 
 const router = createBrowserRouter([
     {
@@ -22,12 +21,6 @@ const router = createBrowserRouter([
         element: <App/>,
         // loader: rootLoader,
         children: [
-            {
-                path: "/fallback",
-                element: <Fallback/>,
-                // loader: rootLoader,
-                children: [],
-            },
             {
                 path: "/login",
                 element: <Login/>,
@@ -37,6 +30,12 @@ const router = createBrowserRouter([
             {
                 path: "/objective",
                 element: <Objective/>,
+                // loader: rootLoader,
+                children: [],
+            },
+            {
+                path: "/feedback",
+                element: <Feedback/>,
                 // loader: rootLoader,
                 children: [],
             },
@@ -55,12 +54,6 @@ const router = createBrowserRouter([
             {
                 path: "/quiz/:number",
                 element: <Quiz/>,
-                // loader: rootLoader,
-                children: [],
-            },
-            {
-                path: "/feedback",
-                element: <Feedback/>,
                 // loader: rootLoader,
                 children: [],
             },

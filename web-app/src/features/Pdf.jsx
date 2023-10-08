@@ -7,20 +7,39 @@ import {AcheevaContext} from "../context/AcheevaContext.jsx";
 import {FullButton} from "./Quiz.jsx";
 import {MyButton} from "./Login.jsx";
 import Loading from "./Loading.jsx";
+import AcheevaProvider from "../providers/AcheevaProvider.jsx";
 
 const Pdf = () => {
     const navigate = useNavigate();
     const [selectedFile, setSelectedFile] = useState(null);
     const inputFileRef = useRef();
-    const {objective, user} = useContext(AcheevaContext) || {};
+    const {objective, user, isUserLoading} = useContext(AcheevaContext) || {};
     const [isAnswerOpen, setIsAnswerOpen] = useState(false);
 
     const handleLibraryFile = async () => {
-        debugger;
         fetch('/sample.pdf')
             .then(response => response?.blob())
             .then(blob => {
-                debugger;
+                setSelectedFile(blob);
+                // Now you have the PDF content as a Blob
+                // You can use the blob for various purposes
+            })
+    }
+
+    const handleLibraryFile2 = async () => {
+        fetch('/sample2.pdf')
+            .then(response => response?.blob())
+            .then(blob => {
+                setSelectedFile(blob);
+                // Now you have the PDF content as a Blob
+                // You can use the blob for various purposes
+            })
+    }
+
+    const handleLibraryFile3 = async () => {
+        fetch('/sample3.pdf')
+            .then(response => response?.blob())
+            .then(blob => {
                 setSelectedFile(blob);
                 // Now you have the PDF content as a Blob
                 // You can use the blob for various purposes
@@ -106,9 +125,9 @@ const Pdf = () => {
             <h3 className="font-semibold text-lg mb-3">La tua libreria</h3>
             <p className="text-sm">Ecco i tuoi contenuti disponibili:</p>
             <div className="m-auto w-full p-8 flex flex-col gap-3">
-                <FullButton variant="contained" onClick={handleLibraryFile}>Sample 1</FullButton>
-                <FullButton variant="contained" disabled>Sample 2</FullButton>
-                <FullButton variant="contained" disabled>Sample 3</FullButton>
+                <FullButton variant="contained" onClick={handleLibraryFile}>Storia dell'informatica</FullButton>
+                <FullButton variant="contained" onClick={handleLibraryFile}>I Castagnetti</FullButton>
+                <FullButton variant="contained" onClick={handleLibraryFile}>Cappuccetto Rosso</FullButton>
             </div>
         </div>
     </SwipeableDrawer>
