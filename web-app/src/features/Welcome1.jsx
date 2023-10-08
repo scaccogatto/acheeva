@@ -13,7 +13,7 @@ const Welcome1 = () => {
     return (
         <div className="flex flex-col justify-center items-center p-7 md:p-20 gap-8">
             <div className="flex justify-center">
-                <img src="../../public/welcome.svg" width={400} height="auto"/>
+                <img src="/welcome.svg" width={400} height="auto"/>
             </div>
             <div>
                 <h1 className="font-semibold text-lg mb-2">Studiare non è mai stato così semplice</h1>

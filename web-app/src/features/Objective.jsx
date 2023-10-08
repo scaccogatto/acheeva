@@ -39,7 +39,7 @@ const Objective = () => {
         <div className="flex flex-col justify-center p-7 md:p-20 gap-8">
 
             <div className="flex justify-center">
-                <img src="../../public/objective.svg" width={400} height="auto"/>
+                <img src="/objective.svg" width={400} height="auto"/>
             </div>
 
 

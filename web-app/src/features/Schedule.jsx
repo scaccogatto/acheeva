@@ -30,11 +30,11 @@ const Schedule = () => {
             {myLastObjective?.quizReady ?
                 <div className="fflex flex-col p-7 md:p-20 gap-10">
                     <div className="flex justify-center mb-4">
-                        <img src="../../public/schedule.svg"/>
+                        <img src="/schedule.svg"/>
                     </div>
                     <h1 className="text-lg font-semibold">{objective}</h1>
                     <p className="text-sm mt-4">Abbiamo creato il tuo programma di studio personalizzato.</p>
-                    <p className="text-xs font-bold my-4 text-blue-400">DEADLINE: {timeline?.endDate}</p>
+                    {/*<p className="text-xs font-bold my-4 text-blue-400">DEADLINE: {timeline?.endDate}</p>*/}
 
                     <div className="mt-4 flex flex-col gap-3">
                         {myLastObjective.modules?.map((module, index) => {
