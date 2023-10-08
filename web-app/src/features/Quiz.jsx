@@ -25,7 +25,7 @@ const Quiz = () => {
             question: myLastObjective.quizQuestions[number],
             objectiveId: myLastObjective.id
         });
-        setFeedback(response);
+        setFeedback({...response, number});
         return navigate("/feedback");
     }
 
@@ -88,7 +88,8 @@ const Quiz = () => {
                     />
                 </div>
                 <div className="m-auto w-full p-8">
-                    <FullButton variant="contained" onClick={() => setIsAnswerOpen(false)}>Fatto</FullButton>
+                    <FullButton variant="contained" onClick={handleVerifyAnswer}
+                        disabled={!answer}>Verifica</FullButton>
                 </div>
             </SwipeableDrawer>
         </Fragment>
@@ -98,6 +99,6 @@ const Quiz = () => {
 
 export default Quiz;
 
-const FullButton = styled(MyButton)`
+export const FullButton = styled(MyButton)`
   width: 100%;
 `

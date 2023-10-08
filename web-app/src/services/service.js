@@ -9,8 +9,8 @@ import {httpsCallable} from "firebase/functions";
 
 export const saveObjective = async (data, file) => {
     const id = uuidv4();
-    await setDoc(doc(db, "objectives", id), {...data, objectiveId: file.name, createdDate: new Date()});
-    const storageRef = ref(storage, `/objectives/${id}/${file.name}`);
+    await setDoc(doc(db, "objectives", id), {...data, objectiveId: file?.name || "sample.pdf", createdDate: new Date()});
+    const storageRef = ref(storage, `/objectives/${id}`);
     uploadBytes(storageRef, file).then((snapshot) => {
         console.log('Uploaded a blob or file!');
     });
