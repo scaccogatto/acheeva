@@ -1,47 +1,86 @@
-import {Button, CircularProgress, IconButton} from "@mui/material";
-import {Outlet, useNavigate} from "react-router-dom";
-import {Fragment, useContext, useEffect} from "react";
+import {Button, CircularProgress, IconButton, SwipeableDrawer} from "@mui/material";
+import {Outlet, useLocation, useNavigate} from "react-router-dom";
+import {Fragment, useContext, useEffect, useCallback, useState} from "react";
 import MenuIcon from '@mui/icons-material/Menu';
 import LogoutIcon from '@mui/icons-material/Logout';
-import {logout} from "../services/service.js";
+import {logout, subscribeToObjectives} from "../services/service.js";
 import {auth} from "../firebase.js";
 import {useAuthState} from "react-firebase-hooks/auth";
 import {AcheevaContext} from "../context/AcheevaContext.jsx";
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 const App = () => {
 
     const [user, loading] = useAuthState(auth);
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
     const navigate = useNavigate();
-    const {setUser} = useContext(AcheevaContext);
+    const location = useLocation();
+    const {setUser, setIsUserLoading, setMyObjectives} = useContext(AcheevaContext);
 
     const handleLogout = async () => {
         await logout();
     }
 
     useEffect(() => {
-        if (!user) {
+        if (!loading && !user) {
+            setUser(user);
             navigate("/login");
         } else {
             setUser(user);
-            navigate("/objective");
         }
     }, [user])
 
+    useEffect(() => {
+        setIsUserLoading(loading);
+    }, [loading]);
+
+    useEffect(() => {
+
+        if (user) {
+            const unsubscribe = subscribeToObjectives((objectives) => {
+                setMyObjectives(objectives.filter(objective => objective.uid === user.uid));
+            });
+
+            return () => {
+                unsubscribe();
+            }
+        }
+    }, [user]);
+
+    useEffect(() => {
+        if ("/" === location.pathname) {
+            navigate("/welcome");
+        }
+    }, [location]);
+
     return (
-        <Fragment>
-            <div className="flex justify-between">
-                <p>{user?.displayName}</p>
+        <div>
+            <div className="flex justify-between py-3 px-5">
                 <IconButton>
-                    <MenuIcon/>
+                    <ArrowBackIcon onClick={() => navigate(-1)}/>
                 </IconButton>
-                <IconButton onClick={handleLogout}>
-                    <LogoutIcon/>
+                <img src={"./logo-small.svg"} />
+                <IconButton>
+                    <MenuIcon onClick={() => setIsMenuOpen(true)}/>
                 </IconButton>
             </div>
-            <div className="flex flex-col justify-center">
-            <Outlet/>
+            <SwipeableDrawer
+                anchor="right"
+                open={isMenuOpen}
+                onClose={() => setIsMenuOpen(false)}
+                onOpen={() => setIsMenuOpen(true)}
+                sx={{width: "500px"}}
+            >
+                <div>
+                    <IconButton onClick={handleLogout}>
+                        <LogoutIcon/>
+                    </IconButton>
+                </div>
+            </SwipeableDrawer>
+            <div className="h-full m-auto" style={{maxWidth: "768px"}}>
+                <Outlet/>
             </div>
-        </Fragment>
+        </div>
     );
 
 }

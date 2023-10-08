@@ -29,7 +29,7 @@ const Pdf = () => {
 
     return (
         <div className="flex flex-col gap-10">
-            <h1 className="text-lg font-semibold">Pdf load</h1>
+            <h1 className="text-lg font-semibold">Aumenta il tuo cervello di AI</h1>
             <div>
                 <input
                     accept="application/pdf" // You can specify the accepted file types here
@@ -52,7 +52,7 @@ const Pdf = () => {
                     {selectedFile ? `Selected file: ${selectedFile.name}` : 'No file selected'}
                 </p>
             </div>
-            <Button variant="outlined" onClick={handleNext}>View your schedule</Button>
+            <Button variant="contained" onClick={handleNext}>View your schedule</Button>
         </div>
     )
 }

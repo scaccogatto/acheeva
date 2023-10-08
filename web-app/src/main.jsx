@@ -12,6 +12,9 @@ import Feedback from "./features/Feedback.jsx";
 import Quiz from "./features/Quiz.jsx";
 import App from "./features/App.jsx";
 import AcheevaProvider from "./providers/AcheevaProvider.jsx";
+import Fallback from "./features/Fallback.jsx";
+import Welcome1 from "./features/Welcome1.jsx";
+import {createTheme, ThemeProvider} from "@mui/material";
 
 const router = createBrowserRouter([
     {
@@ -19,6 +22,12 @@ const router = createBrowserRouter([
         element: <App/>,
         // loader: rootLoader,
         children: [
+            {
+                path: "/fallback",
+                element: <Fallback/>,
+                // loader: rootLoader,
+                children: [],
+            },
             {
                 path: "/login",
                 element: <Login/>,
@@ -44,7 +53,7 @@ const router = createBrowserRouter([
                 children: [],
             },
             {
-                path: "/quiz",
+                path: "/quiz/:number",
                 element: <Quiz/>,
                 // loader: rootLoader,
                 children: [],
@@ -54,15 +63,31 @@ const router = createBrowserRouter([
                 element: <Feedback/>,
                 // loader: rootLoader,
                 children: [],
-            }]
+            },
+            {
+                path: "/welcome",
+                element: <Welcome1/>,
+                // loader: rootLoader,
+                children: [],
+            }],
     }
 ]);
+
+const theme = createTheme({
+    palette: {
+        primary: {
+            main: "#804FD0"
+        },
+    }
+});
 
 
 ReactDOM.createRoot(document.getElementById('root')).render(
     <LocalizationProvider dateAdapter={AdapterDayjs}>
         <AcheevaProvider>
-            <RouterProvider router={router}/>
+            <ThemeProvider theme={theme}>
+                <RouterProvider router={router}/>
+            </ThemeProvider>
         </AcheevaProvider>
     </LocalizationProvider>
 );

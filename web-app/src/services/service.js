@@ -1,12 +1,16 @@
 import {signInWithRedirect, GoogleAuthProvider, signOut} from "firebase/auth";
-import {addDoc, collection} from "firebase/firestore";
-import {auth, db, storage} from "../firebase.js";
-import { ref, uploadBytes } from "firebase/storage";
+import {setDoc, doc, collection, onSnapshot} from "firebase/firestore";
+import {auth, db, functions, storage} from "../firebase.js";
+import {ref, uploadBytes} from "firebase/storage";
+import {v4 as uuidv4} from 'uuid';
+import {httpsCallable} from "firebase/functions";
+
+
 
 export const saveObjective = async (data, file) => {
-    const objectiveRef = collection(db, "objectives");
-    await addDoc(objectiveRef, data);
-    const storageRef = ref(storage, `/objectives/${data.uid}/${file.name}`);
+    const id = uuidv4();
+    await setDoc(doc(db, "objectives", id), {...data, objectiveId: file.name, createdDate: new Date()});
+    const storageRef = ref(storage, `/objectives/${id}/${file.name}`);
     uploadBytes(storageRef, file).then((snapshot) => {
         console.log('Uploaded a blob or file!');
     });
@@ -24,4 +28,30 @@ export const logout = async () => {
     } catch (error) {
         console.error(error);
     }
+}
+
+export const subscribeToObjectives = (callback) => {
+
+    let objectiveRef;
+
+    objectiveRef = collection(db, "objectives");
+    return onSnapshot(objectiveRef, (snapshot) => {
+        const results = [];
+        snapshot.forEach((doc) => {
+            results.push({id: doc.id, ...doc.data()});
+        });
+
+        callback(results);
+    })
+};
+
+export const checkQuiz = (reply, question, objectiveId) => {
+    const promise = httpsCallable(functions, 'stories-checkQuiz-trigger');
+    return promise({ reply, question, objectiveId })
+        .then((result) => {
+            // Read result of the Cloud Function.
+            console.log(result.data);
+            return result.data;
+        });
+
 }
