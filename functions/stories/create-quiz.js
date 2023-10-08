@@ -49,7 +49,7 @@ exports.trigger = onDocumentUpdated(
       const questions = await Promise.all(
         modules.map(async ({ topic }) => {
           const { text } = await chain.call({
-            query: `Generate a question based on the context and the following topic: ${topic}`,
+            query: `Generate a question in Italian based on the context and the following topic: ${topic}`,
           });
 
           return text;
