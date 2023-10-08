@@ -38,6 +38,7 @@ const App = () => {
 
         if (user) {
             const unsubscribe = subscribeToObjectives((objectives) => {
+
                 setMyObjectives(objectives.filter(objective => objective.uid === user.uid));
             });
 

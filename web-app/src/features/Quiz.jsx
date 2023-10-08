@@ -20,8 +20,9 @@ const Quiz = () => {
         } else return undefined;
     }, [myObjectives]);
     const handleVerifyAnswer = async () => {
+        debugger;
         const response = await checkQuiz({
-            reply: answer,
+            reply: String(answer),
             question: myLastObjective.quizQuestions[number],
             objectiveId: myLastObjective.id
         });
@@ -78,7 +79,7 @@ const Quiz = () => {
             >
                 <div style={{height: "60vh", borderRadius: "24px 24px 0px 0px"}} className="p-3">
                     <h3 className="font-semibold text-xl mb-3">La tua risposta</h3>
-                    <TextareaAutosize
+                    <textarea
                         minRows={5} // You can specify the minimum number of rows here
                         placeholder="Inserisci la tua risposta..."
                         className="w-full p-3"

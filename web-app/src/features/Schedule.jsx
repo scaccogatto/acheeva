@@ -1,14 +1,17 @@
-import {Button, Card, CardActions, CardContent} from "@mui/material";
+import {Button, Card, CardActions, CardContent, SwipeableDrawer} from "@mui/material";
 import {useNavigate} from "react-router-dom";
-import {Fragment, useContext, useMemo} from "react";
+import {Fragment, useContext, useMemo, useState} from "react";
 import {AcheevaContext} from "../context/AcheevaContext.jsx";
 import {MyButton} from "./Login.jsx";
 import Loading from "./Loading.jsx";
+import {FullButton} from "./Quiz.jsx";
 
 const Schedule = () => {
 
     const navigate = useNavigate();
     const {myObjectives, objective, timeline} = useContext(AcheevaContext) || {};
+    const [isAnswerOpen, setIsAnswerOpen] = useState(false);
+    const [clickedModule, setClickedModule] = useState(undefined);
     const handleNext = () => {
         navigate("/quiz")
     }
@@ -48,16 +51,19 @@ const Schedule = () => {
                                              style={{borderRadius: "10px"}}/>
                                         <div className="flex flex-col justify-between">
                                             <div>
-                                                <p className="font-light">Modulo {index+1}</p>
+                                                <p className="font-light">Modulo {index + 1}</p>
                                                 <h1 className="capitalize font-semibold mb-2">{module.title}</h1>
                                                 <p className="text-sm">Concludi <span className="font-semibold">entro il 27/10/23</span> per
                                                     ricevere le
                                                     reward.</p>
                                             </div>
                                             <div className="flex">
-                                                <MyButton variant="contained" sx={{fontSize: "10px"}}>Dettagli</MyButton>
+                                                <MyButton variant="contained"
+                                                          sx={{fontSize: "10px"}} onClick={() => { setIsAnswerOpen(true); setClickedModule(index);}}>Dettagli</MyButton>
                                                 <MyButton variant="contained" color="secondary"
-                                                          sx={{padding: "3px 15px"}} onClick={() => navigate(`/quiz/${index}`)}>Fai il test</MyButton>
+                                                          sx={{padding: "3px 15px"}}
+                                                          onClick={() => navigate(`/quiz/${index}`)}>Fai il
+                                                    test</MyButton>
 
                                             </div>
                                         </div>
@@ -72,6 +78,21 @@ const Schedule = () => {
                 :
                 <Loading text={"Stiamo generando il tuo programma..."}/>
             }
+            <SwipeableDrawer
+                anchor="bottom"
+                open={isAnswerOpen}
+                onClose={() => setIsAnswerOpen(false)}
+                onOpen={() => setIsAnswerOpen(true)}
+                sx={{
+                    height: "50%", borderRadius: "24px 24px 0px 0px"
+                }}
+            >
+                <div style={{height: "60vh", borderRadius: "24px 24px 0px 0px"}} className="p-3">
+                    <h3 className="font-semibold text-xl mb-3">Abstract</h3>
+                    <p className="text-sm p-4">{myLastObjective.modules[clickedModule]?.summary}</p>
+                </div>
+
+            </SwipeableDrawer>
         </Fragment>
 
     );

@@ -4,12 +4,12 @@ import {useState} from 'react';
 
 const AcheevaProvider = ({children}) => {
 
-    const [objective, setObjective] = useState(null);
-    const [user, setUser] = useState(null);
+    const [objective, setObjective] = useState(undefined);
+    const [user, setUser] = useState(undefined);
     const [isUserLoading, setIsUserLoading] = useState(false);
-    const [myObjectives, setMyObjectives] = useState(null);
-    const [timeline, setTimeline] = useState(null);
-    const [feedback, setFeedback] = useState(null);
+    const [myObjectives, setMyObjectives] = useState(undefined);
+    const [timeline, setTimeline] = useState(undefined);
+    const [feedback, setFeedback] = useState(undefined);
     return (
         <AcheevaContext.Provider value={{
             objective,
