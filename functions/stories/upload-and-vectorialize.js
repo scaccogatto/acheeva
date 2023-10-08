@@ -19,8 +19,13 @@ const db = getFirestore();
 
 const CHUNK_SIZE = 1000;
 
-exports.trigger = onObjectFinalized({ memory: '4GiB' }, async (event) => {
+exports.trigger = onObjectFinalized({ memory: "4GiB" }, async (event) => {
   const { bucket, name } = event.data;
+
+  if (name.includes("public")) {
+    return;
+  }
+
   const objectiveId = name.split("objectives/")[1].split("/")[0];
 
   await db.doc(`/objectives/${objectiveId}`).set(
