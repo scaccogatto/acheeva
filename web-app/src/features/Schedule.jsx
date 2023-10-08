@@ -16,12 +16,6 @@ const Schedule = () => {
         navigate("/quiz")
     }
 
-    const myLastObjective = useMemo(() => {
-        if (myObjectives && myObjectives.length !== 0) {
-            return myObjectives[myObjectives.length - 1];
-        } else return undefined;
-    }, [myObjectives]);
-
     /*const timelineDates = useMemo(() => {
         if (myObjectives && myObjectives.length !== 0) {
             return timeline?.delta - myObjectives[myObjectives.length - 1]?.modules.length;
@@ -30,7 +24,7 @@ const Schedule = () => {
 
     return (
         <Fragment>
-            {myLastObjective?.quizReady ?
+            {myObjectives[0]?.quizReady ?
                 <div className="fflex flex-col p-7 md:p-20 gap-10">
                     <div className="flex justify-center mb-4">
                         <img src="/schedule.svg"/>
@@ -40,7 +34,7 @@ const Schedule = () => {
                     {/*<p className="text-xs font-bold my-4 text-blue-400">DEADLINE: {timeline?.endDate}</p>*/}
 
                     <div className="mt-4 flex flex-col gap-3">
-                        {myLastObjective.modules?.map((module, index) => {
+                        {myObjectives[0]?.modules?.map((module, index) => {
                             return (
                                 <Card className="p-1" sx={{
                                     boxShadow: "0 2px 20px rgba(0, 0, 0, 0.15)", borderRadius: "10px",
@@ -59,7 +53,10 @@ const Schedule = () => {
                                             </div>
                                             <div className="flex">
                                                 <MyButton variant="contained"
-                                                          sx={{fontSize: "10px"}} onClick={() => { setIsAnswerOpen(true); setClickedModule(index);}}>Dettagli</MyButton>
+                                                          sx={{fontSize: "10px"}} onClick={() => {
+                                                    setIsAnswerOpen(true);
+                                                    setClickedModule(index);
+                                                }}>Dettagli</MyButton>
                                                 <MyButton variant="contained" color="secondary"
                                                           sx={{padding: "3px 15px"}}
                                                           onClick={() => navigate(`/quiz/${index}`)}>Fai il
@@ -89,7 +86,9 @@ const Schedule = () => {
             >
                 <div style={{height: "60vh", borderRadius: "24px 24px 0px 0px"}} className="p-3">
                     <h3 className="font-semibold text-xl mb-3">Abstract</h3>
-                    <p className="text-sm p-4">{myLastObjective.modules[clickedModule]?.summary}</p>
+                    {myObjectives[0]?.modules &&
+                        <p className="text-sm p-4">{myObjectives[0]?.modules[clickedModule]?.summary}</p>
+                    }
                 </div>
 
             </SwipeableDrawer>

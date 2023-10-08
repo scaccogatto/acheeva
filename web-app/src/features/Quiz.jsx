@@ -21,16 +21,10 @@ const Quiz = () => {
     }, [myObjectives]);
     const handleVerifyAnswer = async () => {
         debugger;
-        const response = await checkQuiz({
-            reply: String(answer),
-            question: myLastObjective.quizQuestions[number],
-            objectiveId: myLastObjective.id
-        });
+        const response = await checkQuiz(answer, myLastObjective.id, myLastObjective.quizQuestions[number]);
         setFeedback({...response, number});
         return navigate("/feedback");
     }
-
-
 
     return (
         <Fragment>

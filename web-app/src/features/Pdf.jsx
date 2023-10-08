@@ -15,10 +15,12 @@ const Pdf = () => {
     const {objective, user} = useContext(AcheevaContext) || {};
     const [isAnswerOpen, setIsAnswerOpen] = useState(false);
 
-    const handleLibraryFile = () => {
+    const handleLibraryFile = async () => {
+        debugger;
         fetch('/sample.pdf')
-            .then(response => response.blob())
+            .then(response => response?.blob())
             .then(blob => {
+                debugger;
                 setSelectedFile(blob);
                 // Now you have the PDF content as a Blob
                 // You can use the blob for various purposes
