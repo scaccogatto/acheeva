@@ -126,8 +126,8 @@ const Pdf = () => {
             <p className="text-sm">Ecco i tuoi contenuti disponibili:</p>
             <div className="m-auto w-full p-8 flex flex-col gap-3">
                 <FullButton variant="contained" onClick={handleLibraryFile}>Storia dell'informatica</FullButton>
-                <FullButton variant="contained" onClick={handleLibraryFile}>I Castagnetti</FullButton>
-                <FullButton variant="contained" onClick={handleLibraryFile}>Cappuccetto Rosso</FullButton>
+                <FullButton variant="contained" onClick={handleLibraryFile2}>I Castagnetti</FullButton>
+                <FullButton variant="contained" onClick={handleLibraryFile3}>Cappuccetto Rosso</FullButton>
             </div>
         </div>
     </SwipeableDrawer>
