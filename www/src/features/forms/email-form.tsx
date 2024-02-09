@@ -2,7 +2,7 @@ import { Button, Input } from "@nextui-org/react";
 
 const EmailForm = () => {
   return (
-    <form className="flex justify-center items-center">
+    <form className="flex justify-center items-center" name="contact" method="POST" data-netlify="true">
       <Input
         type="email"
         label="Email"
