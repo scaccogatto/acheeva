@@ -33,6 +33,7 @@ const EmailForm = () => {
             <input type="hidden" name="form-name" value="contact"/>
             <Input
                 type="email"
+                name="email"
                 label="Email"
                 size="sm"
                 className="w-56"
